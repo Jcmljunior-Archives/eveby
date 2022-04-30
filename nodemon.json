@@ -1,0 +1,14 @@
+{
+  "restartable": "rs",
+  "watch": [
+    "dist/**/*",
+    ".env.production",
+    ".env.development"
+  ],
+  "ignore": [
+    ".git",
+    "node_modules",
+    "**/*.spec.ts"
+  ],
+  "ext": "js json"
+}
