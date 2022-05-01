@@ -1,4 +1,5 @@
-import { Client, ClientOptions, Collection, Intents } from 'discord.js';
+import { Client, ClientOptions } from 'discord.js';
+import BootManager from './boot-manager';
 import PermissionsManager from './permissions-manager';
 import StorageManager from './storage-manager';
 
@@ -6,12 +7,14 @@ export default class Eveby {
   permissions: PermissionsManager;
   discord: Client;
   storage: StorageManager;
+  boot: BootManager;
 
   constructor(options: ClientOptions = { intents: [] }) {
     this.permissions = new PermissionsManager();
     this.permissions.get('data').set('intents', options.intents);
     this.storage = new StorageManager();
     this.discord = new Client(options);
+    this.boot = new BootManager(this.discord, this.storage);
   }
 
   async login(token?: string): Promise<any> {
@@ -27,15 +30,9 @@ export default class Eveby {
 
   async load(): Promise<boolean> {
     console.log('Iniciando o carregamento de componentes...');
-    this.storage.setState(this.load.name);
+    // this.storage.setState(this.load.name);
 
-    /**
-     * Notas:
-     */
-    this.storage.set('spices', new Collection());
-    this.storage.get('spices').set('boot', new Collection());
-
-    console.log(this.storage.get('spices'));
+    this.boot.load();
 
     console.log('Concluído!');
     return true;
@@ -43,7 +40,9 @@ export default class Eveby {
 
   async run(): Promise<boolean> {
     console.log('Iniciando a execução de componentes...');
-    this.storage.setState(this.run.name);
+    // this.storage.setState(this.run.name);
+
+    this.boot.run();
 
     console.log('Concluído!');
 
