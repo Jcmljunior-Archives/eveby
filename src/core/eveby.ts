@@ -1,70 +1,61 @@
-import dotenv from 'dotenv';
-import { Collection, Intents } from 'discord.js'
-import { Storage } from './storage'
+import { Client, Collection, Intents } from 'discord.js';
+import PermissionsManager from './permissions-manager';
+import StorageManager from './storage-manager';
 
-export default class Eveby extends Storage {
-  constructor() {
-    super({
-      intents: [
-        Intents.FLAGS.GUILDS
-      ]
-    })
+export default class Eveby {
+  permissions: PermissionsManager;
+  discord: Client;
+  storage: StorageManager;
+
+  constructor(options: any = { intents: [] }) {
+    this.permissions = new PermissionsManager();
+    this.permissions
+      .get('data')
+      .set('intents', [Intents.FLAGS.GUILDS].concat(options.intents));
+
+    this.storage = new StorageManager();
+
+    this.discord = new Client({
+      intents: this.permissions.get('data').get('intents'),
+    });
   }
 
-  formatDays(time: any) {
-    return Math.floor(time / 86400000);
-  }
-
-  formatHours(time: any) {
-    return Math.floor(time / 3600000) % 24;
-  }
-
-  formatMinutes(time: any) {
-    return Math.floor(time / 60000) % 60;
-  }
-
-  formatSeconds(time: any) {
-    return Math.floor(time / 1000) % 60;
-  }
-
-  async logIn(token?: string): Promise<any> {
+  async login(token?: string): Promise<any> {
     try {
-      if (await this.login(token)) {
-        return console.log('Conexão realizada com sucesso.')
+      if (await this.discord.login(token)) {
+        console.log('Conexão realizada com sucesso.');
+        return true;
       }
     } catch (err) {
-      throw new Error('Oppsss, erro de conexão.')
+      throw new Error('Oppsss, erro de conexão.');
     }
   }
 
   async load(): Promise<boolean> {
-    console.log('Loading modules...')
-    return true
+    console.log('Iniciando o carregamento de componentes...');
+    this.storage.setState(this.load.name);
+
+    // this.storage.set('addons', new Collection());
+    this.storage.set('extensions', new Collection());
+
+    console.log(this.storage.has('addons'));
+
+    console.log('Concluído!');
+    return true;
   }
 
   async run(): Promise<boolean> {
-    console.log('Running modules...')
-    
-    dotenv.config({
-      path: './.env.development'
-    })
+    console.log('Iniciando a execução de componentes...');
+    this.storage.setState(this.run.name);
 
-    this.storage.set('config', new Collection)
-    this.storage.get('config').set('bot', {
-      token: process.env.IA_TOKEN
-    })
+    this.storage.set('addons', new Collection());
+    this.storage.set('extensions', new Collection());
 
-    await this.logIn(process.env.IA_TOKEN)
+    console.log(this.storage.has('addons'));
+    console.log(this.storage.has('addons', 'data'));
 
-    await setTimeout(() => {
-      console.log(this.formatDays(this.uptime))
-      console.log(this.formatHours(this.uptime))
-      console.log(this.formatMinutes(this.uptime))
-      console.log(this.formatSeconds(this.uptime))
-      console.log('Done!')
-    }, 3000)
+    console.log('Concluído!');
 
-    return true
+    return true;
   }
-
 }

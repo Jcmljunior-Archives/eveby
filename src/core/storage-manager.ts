@@ -1,26 +1,45 @@
-import type { Core } from '@types'
-import { Collection } from 'discord.js'
+import { Collection } from 'discord.js';
 
-export default class StorageManager implements Core.StorageManagerInterface {
-  storage: Collection<string, any>
+export default class StorageManager {
+  storage: Collection<string, any>;
 
   constructor() {
-    this.storage = new Collection()
+    this.storage = new Collection();
+    this.storage.set('cache', new Collection());
+    this.storage.set('data', new Collection());
   }
-  
-  set(key: string, val: any): boolean {
-    if (this.storage.set(key, val)) {
-      return true;
+
+  setState(state: string) {
+    this.storage.set('state', state);
+  }
+
+  set(key: string, val: any, target?: string) {
+    if (!target) {
+      return this.storage
+        .get(this.storage.get('state') == 'load' ? 'data' : 'cache')
+        .set(key, val);
     }
 
-    return false;
+    this.storage.get(target).set(key, val);
   }
 
-  get(key: string): any {
-    return this.storage.get(key);
+  get(key: string, target?: string) {
+    if (!target) {
+      return this.storage
+        .get(this.storage.get('state') == 'load' ? 'data' : 'cache')
+        .get(key);
+    }
+
+    this.storage.get(target).get(key);
   }
 
-  has(key: string): boolean {
-    return this.storage.has(key);
+  has(key: string, target?: string): boolean {
+    if (!target) {
+      return this.storage
+        .get(this.storage.get('state') == 'load' ? 'data' : 'cache')
+        .has(key);
+    }
+
+    return this.storage.get(target).has(key);
   }
 }
