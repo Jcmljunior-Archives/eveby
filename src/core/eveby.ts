@@ -1,4 +1,4 @@
-import { Client, Collection, Intents } from 'discord.js';
+import { Client, ClientOptions, Collection, Intents } from 'discord.js';
 import PermissionsManager from './permissions-manager';
 import StorageManager from './storage-manager';
 
@@ -7,17 +7,11 @@ export default class Eveby {
   discord: Client;
   storage: StorageManager;
 
-  constructor(options: any = { intents: [] }) {
+  constructor(options: ClientOptions = { intents: [] }) {
     this.permissions = new PermissionsManager();
-    this.permissions
-      .get('data')
-      .set('intents', [Intents.FLAGS.GUILDS].concat(options.intents));
-
+    this.permissions.get('data').set('intents', options.intents);
     this.storage = new StorageManager();
-
-    this.discord = new Client({
-      intents: this.permissions.get('data').get('intents'),
-    });
+    this.discord = new Client(options);
   }
 
   async login(token?: string): Promise<any> {
@@ -35,10 +29,13 @@ export default class Eveby {
     console.log('Iniciando o carregamento de componentes...');
     this.storage.setState(this.load.name);
 
-    // this.storage.set('addons', new Collection());
-    this.storage.set('extensions', new Collection());
+    /**
+     * Notas:
+     */
+    this.storage.set('spices', new Collection());
+    this.storage.get('spices').set('boot', new Collection());
 
-    console.log(this.storage.has('addons'));
+    console.log(this.storage.get('spices'));
 
     console.log('Concluído!');
     return true;
@@ -47,12 +44,6 @@ export default class Eveby {
   async run(): Promise<boolean> {
     console.log('Iniciando a execução de componentes...');
     this.storage.setState(this.run.name);
-
-    this.storage.set('addons', new Collection());
-    this.storage.set('extensions', new Collection());
-
-    console.log(this.storage.has('addons'));
-    console.log(this.storage.has('addons', 'data'));
 
     console.log('Concluído!');
 
