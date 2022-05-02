@@ -17,6 +17,12 @@ export default class Eveby {
     this.boot = new BootManager(this.discord, this.storage);
   }
 
+  async setState(target: string): Promise<boolean> {
+    this.storage.storage.get('cache').set('state', target);
+    this.storage.storage.get('data').set('state', target);
+    return true;
+  }
+
   async login(token?: string): Promise<any> {
     try {
       if (await this.discord.login(token)) {
@@ -29,23 +35,26 @@ export default class Eveby {
   }
 
   async load(): Promise<boolean> {
-    console.log('Iniciando o carregamento de componentes...');
-    // this.storage.setState(this.load.name);
+    new Promise(() => console.log('Iniciando carregamento de eventos...'))
+      .then(() => Promise.resolve(this.boot.load()))
+      .catch(() => {
+        throw new Error(
+          'Oppss, não foi possível concluír o carregamento de eventos!',
+        );
+      });
 
-    this.boot.load();
-
-    console.log('Concluído!');
-    return true;
+    return Promise.resolve(true);
   }
 
   async run(): Promise<boolean> {
-    console.log('Iniciando a execução de componentes...');
-    // this.storage.setState(this.run.name);
+    new Promise(() => console.log('Iniciando a execução de eventos...'))
+      .then(() => Promise.resolve(this.boot.run()))
+      .catch(() => {
+        throw new Error(
+          'Oppss, não foi possível concluír a execução de eventos!',
+        );
+      });
 
-    this.boot.run();
-
-    console.log('Concluído!');
-
-    return true;
+    return Promise.resolve(true);
   }
 }
