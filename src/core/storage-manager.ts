@@ -1,45 +1,39 @@
-import { Collection } from 'discord.js';
+import { Client, Collection } from 'discord.js';
+import { EvebyOptions } from './eveby';
 
-export default class StorageManager {
+export default class StorageManager extends Client {
   storage: Collection<string, any>;
 
-  constructor() {
+  constructor(clientOptions: EvebyOptions) {
+    super(clientOptions);
     this.storage = new Collection();
-    this.storage.set('cache', new Collection());
-    this.storage.set('data', new Collection());
   }
 
-  setState(state: string) {
-    this.storage.set('state', state);
+  toString() {
+    return this;
   }
 
-  set(key: string, val: any, target?: string) {
-    if (!target) {
-      return this.storage
-        .get(this.storage.get('state') == 'load' ? 'data' : 'cache')
-        .set(key, val);
+  has(key: string): boolean {
+    return this.storage.has(key);
+  }
+
+  set(key: string, val: any): any {
+    if (this.storage.has(key)) {
+      throw new Error(
+        'Oppss, a chave %{name} já foi definida.'.replace('%{name}', key),
+      );
     }
 
-    this.storage.get(target).set(key, val);
+    return this.storage.set(key, val);
   }
 
-  get(key: string, target?: string) {
-    if (!target) {
-      return this.storage
-        .get(this.storage.get('state') == 'load' ? 'data' : 'cache')
-        .get(key);
+  get(key: string): any {
+    if (!this.storage.has(key)) {
+      throw new Error(
+        'Oppss, a chave %{name} não foi definida.'.replace('%{name}', key),
+      );
     }
 
-    this.storage.get(target).get(key);
-  }
-
-  has(key: string, target?: string): boolean {
-    if (!target) {
-      return this.storage
-        .get(this.storage.get('state') == 'load' ? 'data' : 'cache')
-        .has(key);
-    }
-
-    return this.storage.get(target).has(key);
+    return this.storage.get(key);
   }
 }

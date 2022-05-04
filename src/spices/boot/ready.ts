@@ -1,11 +1,13 @@
-import Boot from 'src/core/boot';
+export default class Ready {
+  options: any;
 
-export default class Ready extends Boot {
-  constructor(storage?: any, options?: any) {
-    super(storage, options);
+  constructor() {
+    this.options = {
+      name: 'ready',
+    };
   }
 
-  run() {
-    console.log('Estamos Online!');
+  async run(): Promise<any> {
+    console.log('Running...');
   }
 }
