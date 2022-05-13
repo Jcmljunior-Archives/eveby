@@ -1,13 +1,13 @@
-export default class Ready {
-  options: any;
+import Boot from '../../core/boot'
 
-  constructor() {
-    this.options = {
-      name: 'ready',
-    };
+export default class Ready extends Boot {
+  constructor(storage: any) {
+    super({
+      name: 'ready'
+    })
   }
 
   async run(): Promise<any> {
-    console.log('Running...');
+    console.log('Running...')
   }
 }

@@ -1,5 +1,5 @@
 {
   "verbose": true,
   "restartable": "rs",
-  "watch": ["dist/**/*", ".env.production", ".env.development"]
+  "watch": ["dist/**/*", ".env.prod", ".env.dev"]
 }
