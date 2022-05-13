@@ -13,7 +13,6 @@
     "experimentalDecorators": true,
     "resolveJsonModule": true,
     "esModuleInterop": false,
-    "baseUrl": ".",
     "skipLibCheck": true
   },
   "include": ["./src/**/*", "./@types/**/*"],
