@@ -1,80 +1,92 @@
 import { config } from 'dotenv'
-import { ClientOptions } from 'discord.js'
-import BootManager from './boot/boot-manager'
-import StorageManager from './storage-manager'
+import { Client, ClientOptions, Collection } from "discord.js"
+import { BootManager } from "./boot/boot-manager"
+import { ConfigManager } from './config-manager'
 
-export declare type EvebyOptions = ClientOptions
+export class Eveby {
+  /**
+   * Dados
+   */
+  storage: Collection<string, any>
 
-export default class Eveby {
-  storage: StorageManager
-  boot: any
+  /**
+   * Configurações
+   */
+  config: ConfigManager
 
-  constructor(clientOptions: EvebyOptions) {
-    this.storage = new StorageManager(clientOptions)
+  /**
+   * Eventos.
+   */
+  boot: BootManager
+
+  /**
+   * Extensões.
+   */
+  plugins: any;
+
+  constructor(options: ClientOptions) {
+    this.storage = new Collection()
+    this.config = new ConfigManager()
+    this.boot = new BootManager()
+    this.storage.set('client', new Client(options));
+  }
+
+  /**
+   * A função "getPath" é responsável por retornar o caminho absoluto do projeto.
+   * @returns string
+   */
+  getPath(): string {
+    return process.cwd()
   }
 
   async login(): Promise<boolean> {
     config({
-      path: './.env.dev',
+      path: `./environments/.env.${this.config.get('mode')}`
     })
 
-    if (await this.storage.login(process.env.EVEBY_TOKEN)) {
-      return Promise.resolve(true)
-    }
-
-    return Promise.reject(false)
-  }
-
-  async bootRun(response: boolean): Promise<boolean> {
-    if (!response) return Promise.resolve(false)
-    this.boot.storage.get('run').forEach((boot: any) => {
-      this.storage.on(boot.options.name, (...args: any[]) => {
-        boot.register(this.storage)
-        boot.run()
-      })
-    })
-
-    return Promise.resolve(true)
-  }
-
-  /**
-   * Responsável pelo carregamento de componentes.
-   */
-  async load(): Promise<boolean> {
-    this.boot = new BootManager()
-    this.boot.load()
-
-    return Promise.resolve(true)
-  }
-
-  /**
-   * Responsável por validar o retorno da função load.
-   * @param response Se a resposta for diferente de verdadeiro, retorna uma
-   * mensagem de erro.
-   */
-  async failedToLoad(response: boolean): Promise<void> {
-    if (!response) {
-      throw new Error('Oppss, ocorreu um erro durante o carregamento...')
-    }
-  }
-
-  /**
-   * Responsável pela execução dos componentes previamente carregados.
-   */
-  async run(): Promise<boolean> {
-    this.boot.run().then((response: boolean) => this.bootRun(response))
+    if (!await this.storage.get('client').login(process.env.EVEBY_TOKEN)) return false
 
     return true
   }
 
   /**
-   * Responsável por validar o retorno da função load.
-   * @param response Se a resposta for diferente de verdadeiro, retorna uma
-   * mensagem de erro.
+   * A função "load" é responsável pelo carregamento dos componentes.
+   * @returns boolean
    */
-  async failedToRun(response: boolean): Promise<void> {
-    if (!response) {
-      throw new Error('Oppss, ocorreu um erro durante a execução...')
-    }
+  async load(): Promise<boolean> {
+    this.storage.set('boot', this.boot.load()
+      .then((fnc: CallableFunction) => this.boot.run(`${this.getPath()}/dist/spices/boot/`, fnc)))
+
+    return true
+  }
+
+  /**
+   * Responsável por validar o estado do retorno da função "load".
+   */
+  async validateToLoad(response: boolean): Promise<void> {
+    if (response) return
+    throw "Oppss, ocorreu um erro no carregamento load."
+  }
+
+  /**
+   * A função "run" é responsável pela execução dos componentes carregados.
+   * @returns boolean
+   */
+  async run(): Promise<boolean> {
+    this.storage.get('boot').then((data: string[]) => {
+      data.forEach((boot: any) => {
+        this.storage.get('client').on(boot.options.name, (...args: any[]) => boot.run(args))
+      })
+    })
+
+    return true
+  }
+
+  /**
+   * Responsável por validar o estado do retorno da função "run".
+   */
+  async validateToRun(response: boolean): Promise<void> {
+    if (response) return
+    throw "Oppss, ocorreu um erro no carregamento run."
   }
 }

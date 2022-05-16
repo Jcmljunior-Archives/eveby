@@ -1,37 +1,33 @@
-import { Collection } from 'discord.js'
 import { readdirSync } from 'fs'
 
-export default class BootManager {
-  storage: Collection<string, any>
+export class BootManager {
 
-  constructor() {
-    this.storage = new Collection()
-    this.storage.set('load', new Collection())
-    this.storage.set('run', new Collection())
-  }
-
-  getPath() {
-    return process.cwd() + '/dist/spices/boot/'
-  }
-
-  async load(): Promise<boolean> {
-    if (this.storage.set('load', readdirSync(this.getPath()))) {
-      return Promise.resolve(true)
+  async load(): Promise<CallableFunction> {
+    return function (path: string) {
+      return readdirSync(path)
     }
-
-    return Promise.reject(false)
   }
 
-  async run(): Promise<boolean> {
-    if (this.storage.get('load').length) {
-      let obj: any
-      this.storage.get('load').forEach((item: string) => {
-        obj = require(this.getPath() + item)
-        obj = new obj[Object.keys(obj)[0]]()
-        this.storage.get('run').set(obj.options.name, obj)
-      })
-    }
+  async run(path: string, fnc: CallableFunction): Promise<string[]> {
+    const data: string[] = fnc(path)
+    let response: string[] = []
+    let obj: any
 
-    return Promise.resolve(true)
+    if (!data.length) return []
+
+    Object.keys(data).forEach((key: any) => {
+      /**
+       * Bloqueio de arquivos com extensões diferentes.
+       */
+      if (!data[key].endsWith('.js')) return
+
+      obj = require(`${path}${data[key]}`)
+      obj = new obj[Object.keys(obj)[0]]()
+
+      response[key] = obj
+    })
+
+    return response
   }
+
 }

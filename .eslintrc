@@ -4,6 +4,9 @@
     "@typescript-eslint"
   ],
   "rules": {
-    "quotes": [2, "error"]
+    "quotes": [
+      2,
+      "error"
+    ]
   }
 }

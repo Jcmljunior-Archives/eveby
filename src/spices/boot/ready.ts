@@ -1,13 +1,13 @@
-import Boot from '../../core/boot'
+import { Boot } from "../../core/boot";
 
 export default class Ready extends Boot {
-  constructor(storage: any) {
+  constructor() {
     super({
       name: 'ready'
     })
   }
 
-  async run(): Promise<any> {
-    console.log('Running...')
+  run() {
+    console.log('Tudo Pronto.')
   }
 }
