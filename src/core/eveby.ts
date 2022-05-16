@@ -1,7 +1,8 @@
 import { config } from 'dotenv';
 import { Client, ClientOptions, Collection } from 'discord.js';
-import { BootManager } from './boot/boot-manager';
 import { ConfigManager } from './config-manager';
+import { BootManager } from './boot/boot-manager';
+import { PluginManager } from './plugin/plugin-manager';
 
 export class Eveby {
   /**
@@ -22,12 +23,13 @@ export class Eveby {
   /**
    * Extensões.
    */
-  plugins: any;
+  plugins: PluginManager;
 
   constructor(options: ClientOptions) {
     this.storage = new Collection();
     this.config = new ConfigManager();
     this.boot = new BootManager();
+    this.plugins = new PluginManager();
     this.storage.set('client', new Client(options));
   }
 
@@ -64,6 +66,15 @@ export class Eveby {
         ),
     );
 
+    this.storage.set(
+      'plugins',
+      this.plugins
+        .load()
+        .then((fnc: CallableFunction) =>
+          this.plugins.run(`${this.getPath()}/dist/spices/plugins`, fnc),
+        ),
+    );
+
     return true;
   }
 
@@ -86,6 +97,10 @@ export class Eveby {
           .get('client')
           .on(boot.options.name, (...args: any[]) => boot.run(args));
       });
+    });
+
+    this.storage.get('plugins').then((data: string[]) => {
+      console.log(data);
     });
 
     return true;
