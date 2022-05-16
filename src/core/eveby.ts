@@ -72,7 +72,7 @@ export class Eveby {
         .load()
         .then((fnc: CallableFunction) =>
           this.plugins.run(`${this.getPath()}/dist/spices/plugins`, fnc),
-        ),
+        ).then((response: string[]) => response.filter((el) => el)),
     );
 
     return true;
