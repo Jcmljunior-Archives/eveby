@@ -1,5 +1,5 @@
-import { Intents } from "discord.js";
-import { Eveby } from "./core/eveby";
+import { Intents } from 'discord.js';
+import { Eveby } from './core/eveby';
 
 const EvebyBot = new Eveby({
   intents: [Intents.FLAGS.GUILDS],

@@ -6,7 +6,9 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon ./dist/index.js",
-    "watch": "./node_modules/.bin/tsc -W"
+    "watch": "./node_modules/.bin/tsc -W",
+    "lint": "eslint --fix \"./{src,typescript}/**/*.{js,jsx,ts,d.ts,tsx,json}\"",
+    "format": "prettier --write \"./src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
   },
   "devDependencies": {
     "@messageformat/core": "^3.0.1",

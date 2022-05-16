@@ -1,4 +1,4 @@
-import { readdirSync } from "fs";
+import { readdirSync } from 'fs';
 
 export class BootManager {
   async load(): Promise<CallableFunction> {
@@ -18,7 +18,7 @@ export class BootManager {
       /**
        * Bloqueio de arquivos com extensões diferentes.
        */
-      if (!data[key].endsWith(".js")) return;
+      if (!data[key].endsWith('.js')) return;
 
       obj = require(`${path}${data[key]}`);
       obj = new obj[Object.keys(obj)[0]]();

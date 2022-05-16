@@ -1,7 +1,7 @@
-import { config } from "dotenv";
-import { Client, ClientOptions, Collection } from "discord.js";
-import { BootManager } from "./boot/boot-manager";
-import { ConfigManager } from "./config-manager";
+import { config } from 'dotenv';
+import { Client, ClientOptions, Collection } from 'discord.js';
+import { BootManager } from './boot/boot-manager';
+import { ConfigManager } from './config-manager';
 
 export class Eveby {
   /**
@@ -28,7 +28,7 @@ export class Eveby {
     this.storage = new Collection();
     this.config = new ConfigManager();
     this.boot = new BootManager();
-    this.storage.set("client", new Client(options));
+    this.storage.set('client', new Client(options));
   }
 
   /**
@@ -41,10 +41,10 @@ export class Eveby {
 
   async login(): Promise<boolean> {
     config({
-      path: `./environments/.env.${this.config.get("mode")}`,
+      path: `./environments/.env.${this.config.get('mode')}`,
     });
 
-    if (!(await this.storage.get("client").login(process.env.EVEBY_TOKEN)))
+    if (!(await this.storage.get('client').login(process.env.EVEBY_TOKEN)))
       return false;
 
     return true;
@@ -56,12 +56,12 @@ export class Eveby {
    */
   async load(): Promise<boolean> {
     this.storage.set(
-      "boot",
+      'boot',
       this.boot
         .load()
         .then((fnc: CallableFunction) =>
-          this.boot.run(`${this.getPath()}/dist/spices/boot/`, fnc)
-        )
+          this.boot.run(`${this.getPath()}/dist/spices/boot/`, fnc),
+        ),
     );
 
     return true;
@@ -72,7 +72,7 @@ export class Eveby {
    */
   async validateToLoad(response: boolean): Promise<void> {
     if (response) return;
-    throw "Oppss, ocorreu um erro no carregamento load.";
+    throw 'Oppss, ocorreu um erro no carregamento load.';
   }
 
   /**
@@ -80,10 +80,10 @@ export class Eveby {
    * @returns boolean
    */
   async run(): Promise<boolean> {
-    this.storage.get("boot").then((data: string[]) => {
+    this.storage.get('boot').then((data: string[]) => {
       data.forEach((boot: any) => {
         this.storage
-          .get("client")
+          .get('client')
           .on(boot.options.name, (...args: any[]) => boot.run(args));
       });
     });
@@ -96,6 +96,6 @@ export class Eveby {
    */
   async validateToRun(response: boolean): Promise<void> {
     if (response) return;
-    throw "Oppss, ocorreu um erro no carregamento run.";
+    throw 'Oppss, ocorreu um erro no carregamento run.';
   }
 }

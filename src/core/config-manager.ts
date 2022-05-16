@@ -1,5 +1,5 @@
-import { Collection } from "discord.js";
-import { EvebyConfig } from "../config";
+import { Collection } from 'discord.js';
+import { EvebyConfig } from '../config';
 
 export class ConfigManager {
   private storage: Collection<string, any>;

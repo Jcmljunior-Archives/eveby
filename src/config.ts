@@ -1,4 +1,4 @@
-declare type ConfigMode = "prod" | "dev";
+declare type ConfigMode = 'prod' | 'dev';
 
 declare type ConfigOptions = {
   mode: ConfigMode;
@@ -7,6 +7,6 @@ declare type ConfigOptions = {
 };
 
 export const EvebyConfig: ConfigOptions = {
-  mode: "dev",
+  mode: 'dev',
   debug: true,
 };

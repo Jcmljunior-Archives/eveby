@@ -1,9 +1,9 @@
-import { Boot } from "../../core/boot";
+import { Boot } from '../../core/boot';
 
 export default class Message extends Boot {
   constructor() {
     super({
-      name: "message",
+      name: 'message',
     });
   }
 

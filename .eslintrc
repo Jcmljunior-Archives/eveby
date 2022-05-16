@@ -5,8 +5,8 @@
   ],
   "rules": {
     "quotes": [
-      2,
-      "error"
+      "error",
+      "single"
     ]
   }
 }
