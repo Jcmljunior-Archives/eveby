@@ -1,11 +1,11 @@
 declare type BootOptions = {
-  name: string
-}
+  name: string;
+};
 
 export class Boot {
-  options: BootOptions
+  options: BootOptions;
 
   constructor(options: BootOptions) {
-    this.options = options
+    this.options = options;
   }
 }

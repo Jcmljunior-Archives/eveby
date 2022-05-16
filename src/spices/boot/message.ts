@@ -3,11 +3,11 @@ import { Boot } from "../../core/boot";
 export default class Message extends Boot {
   constructor() {
     super({
-      name: 'message'
-    })
+      name: "message",
+    });
   }
 
   run(args: string[]) {
-    console.log(args)
+    console.log(args);
   }
 }
