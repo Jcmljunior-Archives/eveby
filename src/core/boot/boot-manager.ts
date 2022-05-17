@@ -1,6 +1,7 @@
 import { readdirSync } from 'fs';
 
 export class BootManager {
+
   async load(): Promise<CallableFunction> {
     return function (path: string) {
       return readdirSync(path);

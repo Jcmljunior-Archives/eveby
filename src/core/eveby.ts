@@ -59,20 +59,16 @@ export class Eveby {
   async load(): Promise<boolean> {
     this.storage.set(
       'boot',
-      this.boot
-        .load()
-        .then((fnc: CallableFunction) =>
-          this.boot.run(`${this.getPath()}/dist/spices/boot/`, fnc),
-        ),
+      this.boot.load().then((fnc: CallableFunction) => {
+        return this.boot.run(`${this.getPath()}/dist/spices/boot/`, fnc);
+      }),
     );
 
     this.storage.set(
       'plugins',
-      this.plugins
-        .load()
-        .then((fnc: CallableFunction) =>
-          this.plugins.run(`${this.getPath()}/dist/spices/plugins`, fnc),
-        ).then((response: string[]) => response.filter((el) => el)),
+      this.plugins.load().then((fnc: CallableFunction) => {
+        return this.plugins.run(`${this.getPath()}/dist/spices/plugins`, fnc);
+      }),
     );
 
     return true;
@@ -95,7 +91,9 @@ export class Eveby {
       data.forEach((boot: any) => {
         this.storage
           .get('client')
-          .on(boot.options.name, (...args: any[]) => boot.run(args));
+          .on(boot.options.name, (...args: any[]) => {
+            return boot.setClient(this.storage.get('client')).run(args)
+          });
       });
     });
 

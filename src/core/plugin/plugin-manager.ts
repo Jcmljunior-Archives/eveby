@@ -11,10 +11,7 @@ export class PluginManager {
 
   async run(path: string, fnc: CallableFunction): Promise<string[]> {
     const ls_dir: string[] = fnc(path);
-
     let response: string[] = [];
-    // let data: string[] = [];
-
     let obj: any;
 
     if (!ls_dir.length) return [];
@@ -24,7 +21,7 @@ export class PluginManager {
         .then((fnc: CallableFunction) => fnc(`${path}/${dir}`))
         .then((data: string[]) => {
           if (!data.length) return [];
-          data.forEach((plugin: string, position: number) => {
+          data.forEach((plugin, position: number) => {
             /**
              * Filtra os plugins.
              * Bloqueia arquivos diferentes de .js
