@@ -4,6 +4,7 @@ import { Eveby } from './core/eveby';
 const EvebyBot = new Eveby({
   intents: [
     Intents.FLAGS.GUILDS,
+    Intents.FLAGS.GUILD_MESSAGES,
     Intents.FLAGS.GUILD_MEMBERS
   ],
 });

@@ -27,10 +27,22 @@ export class Eveby {
 
   constructor(options: ClientOptions) {
     this.storage = new Collection();
-    this.config = new ConfigManager();
-    this.boot = new BootManager();
-    this.plugins = new PluginManager();
     this.storage.set('client', new Client(options));
+
+    /**
+     * Configurações do projeto.
+     */
+    this.config = new ConfigManager();
+
+    /**
+     * Eventos
+     */
+    this.boot = new BootManager();
+    
+    /**
+     * Extensões
+     */
+    this.plugins = new PluginManager();
   }
 
   /**
