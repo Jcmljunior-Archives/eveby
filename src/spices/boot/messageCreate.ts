@@ -1,18 +1,18 @@
 import { Boot } from '../../core/boot';
 import { ParamsManager } from '../../core/params-manager';
 
-export default class Message extends Boot {
+export default class messageCreate extends Boot {
   params: ParamsManager;
 
   constructor() {
     super({
-      name: 'message',
+      name: 'messageCreate',
     });
 
     this.params = new ParamsManager();
   }
 
   run(args: string[]) {
-    console.log(args);
+    console.log('Hello');
   }
 }
