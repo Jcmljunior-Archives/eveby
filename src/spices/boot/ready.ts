@@ -7,7 +7,12 @@ export default class Ready extends Boot {
     });
   }
 
-  run() {
+  async setActivity(): Promise<any> {
+    this.storage?.user.setActivity('!help', { type: 'PLAYING' });
+  }
+
+  async run() {
+    await this.setActivity()
     console.log('Tudo Pronto.');
   }
 }
